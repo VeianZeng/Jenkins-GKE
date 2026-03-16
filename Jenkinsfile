@@ -9,7 +9,7 @@ pipeline {
     environment {
         // --- 请修改为你的 GCP 项目信息 ---
         PROJECT_ID = 'wdtest-001'
-        REGION     = 'asia-east2'
+        REGION     = 'asia-east2-a'
         REPO_NAME  = 'vija-images' 
         
         // --- 保持默认 ---
@@ -45,7 +45,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'gcp-key', variable: 'GCP_KEY')]) {
                     sh '''
                         set +x
-                        gcloud container clusters get-credentials cluster-vija --region ${REGION} --project ${PROJECT_ID} --quiet
+                        gcloud container clusters get-credentials vija-hk-cluster --zone ${REGION} --project ${PROJECT_ID} --quiet
                         # 核心逻辑：用刚生成的镜像地址替换 YAML 里的占位符
                         sed -i "s|IMAGE_PLACEHOLDER|${FULL_IMAGE_PATH}|g" k8s-deploy.yaml
                         kubectl apply -f k8s-deploy.yaml
